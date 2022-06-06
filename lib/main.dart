@@ -1,7 +1,9 @@
+import 'package:digikalacurse/AllProduct.dart';
 import 'package:digikalacurse/Model/SpecialViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:digikalacurse/Model/PageViewModel.dart';
+import 'package:digikalacurse/Model/EventsModel.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -23,6 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<PageViewModel>> pageViewFuture;
   late Future<List<SpecialViewModel>> specialViewFuture;
+  late Future<List<EventsModel>> eventsFuture;
   PageController pageController = PageController();
 
   @override
@@ -30,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     pageViewFuture = sendRequstPageView();
     specialViewFuture = sendRequstSpecial();
+    eventsFuture = sendRequesteEvents();
   }
 
   @override
@@ -45,7 +49,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SingleChildScrollView(
-
         child: Container(
           child: Column(
             children: [
@@ -108,7 +111,6 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.hasData) {
                         List<SpecialViewModel>? model = snapshot.data;
                         return ListView.builder(
-
                             reverse: true,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
@@ -129,14 +131,21 @@ class _HomePageState extends State<HomePage> {
                                             top: 15, right: 10, left: 10),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(bottom: 5),
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
                                         child: Expanded(
                                           child: OutlinedButton(
                                               style: OutlinedButton.styleFrom(
                                                 side: BorderSide(
                                                     color: Colors.white),
                                               ),
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AllProduct()));
+                                              },
                                               child: Text(
                                                 "مشاهده همه",
                                                 style: TextStyle(
@@ -163,65 +172,87 @@ class _HomePageState extends State<HomePage> {
                 ),
                 padding: EdgeInsets.only(top: 10),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
+              Container(
+                width: double.infinity,
+                child: FutureBuilder<List<EventsModel>>(
+                  future: eventsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<EventsModel>? modle = snapshot.data;
 
-                  height: 150,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          color: Colors.deepOrangeAccent,
-                          height:150 ,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          color: Colors.red,
-                          height:150 ,
-
-                        ),
-                      )
-                    ],
-                  ),
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 190,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        modle![0].imgUrl,
+                                        fit: BoxFit.fill,
+                                        width: 190,
+                                      )),
+                                ),
+                                Container(
+                                  height: 190,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        modle[1].imgUrl,
+                                        fit: BoxFit.fill,
+                                        width: 190,
+                                      )),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 190,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        modle[2].imgUrl,
+                                        fit: BoxFit.fill,
+                                        width: 190,
+                                      )),
+                                ),
+                                Container(
+                                  height: 190,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        modle[3].imgUrl,
+                                        fit: BoxFit.fill,
+                                        width: 190,
+                                      )),
+                                )
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            height: 20,
+                          )
+                        ],
+                      );
+                    } else {
+                      return JumpingDotsProgressIndicator(
+                        fontSize: 60,
+                        color: Colors.black,
+                        dotSpacing: 5,
+                      );
+                    }
+                  },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-
-                  height: 150,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          color: Colors.deepOrangeAccent,
-                          height:150 ,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          color: Colors.red,
-                          height:150 ,
-
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-
             ],
           ),
         ),
@@ -234,13 +265,12 @@ class _HomePageState extends State<HomePage> {
       width: 200,
       height: 300,
       child: Card(
-
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Container(
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all( 8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Image.network(
                   specialViewModel.imgUrl,
                   height: 150,
@@ -249,45 +279,53 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(specialViewModel.productName,style: TextStyle(fontSize: 14,color: Colors.black),),
-              ),
-              Expanded(child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-
-                      children: [
-
-                        Text(specialViewModel.offPrice.toString()+"T",style: TextStyle(fontSize: 18 ,color: Colors.grey),),
-                        Text(specialViewModel.price.toString()+"T",style: TextStyle(fontSize: 15,color: Colors.red ,decoration: TextDecoration.lineThrough ),),
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            color: Colors.deepOrangeAccent,),
-                            child: Center(child: Text(specialViewModel.offPrecent.toString()+"%",style: TextStyle(fontSize:15,color: Colors.white,),)),
-
-
-
-
-                          ),
-                        )
-
-
-
-
-
-                      ],
-                    )
-                  ],
+                child: Text(
+                  specialViewModel.productName,
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
-
               ),
+              Expanded(
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            specialViewModel.offPrice.toString() + "T",
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                          Text(
+                            specialViewModel.price.toString() + "T",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.red,
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.deepOrangeAccent,
+                              ),
+                              child: Center(
+                                  child: Text(
+                                specialViewModel.offPrecent.toString() + "%",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                ),
+                              )),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               )
             ],
           ),
@@ -300,7 +338,7 @@ class _HomePageState extends State<HomePage> {
   Future<List<PageViewModel>> sendRequstPageView() async {
     List<PageViewModel> model = [];
 
-    var response = await Dio().get("http://irantechs.ir/pic.json");
+    var response = await Dio().get("https://irantechs.ir/selectpic.php");
     //print(response.data['photos'][0]['imgUrl']);
 
     for (var item in response.data['photo']) {
@@ -310,9 +348,18 @@ class _HomePageState extends State<HomePage> {
     return model;
   }
 
+  Future<List<EventsModel>> sendRequesteEvents() async {
+    List<EventsModel> models = [];
+    var response = await Dio().get("https://irantechs.ir/selectevent.php");
+    for (var item in response.data["product"]) {
+      models.add(EventsModel(item["imgUrl"]));
+    }
+    return models;
+  }
+
   Future<List<SpecialViewModel>> sendRequstSpecial() async {
     List<SpecialViewModel> model = [];
-    var response = await Dio().get("http://irantechs.ir/product.json");
+    var response = await Dio().get("https://irantechs.ir/selectproduct.php");
 
     for (var item in response.data['product']) {
       model.add(SpecialViewModel(
